@@ -55,6 +55,7 @@ export function StreamPanel({
   showDeviceFrame = true,
   deviceFrameAssets,
   onClipboardFallback,
+  shakeNonce,
 }: {
   device: Device;
   client: DeviceClient;
@@ -77,6 +78,8 @@ export function StreamPanel({
   deviceFrameAssets?: DeviceFrameAssets;
   /** A toolbar Paste or Copy could not use the browser clipboard. Show the inspector's Clipboard section. */
   onClipboardFallback?: (request: ClipboardRequest) => void;
+  /** Changes each time the viewer shakes the device; the device wobbles once per change. */
+  shakeNonce?: number;
 }) {
   const viewport = useMobileViewport();
   const [presentation, setPresentation] = useState(false);
@@ -324,6 +327,7 @@ export function StreamPanel({
             showDeviceFrame={showDeviceFrame}
             deviceFrameAssets={deviceFrameAssets}
             onLoadingChange={setScreenLoading}
+            shakeNonce={shakeNonce}
           />
           {!viewport.mobile && (
             <div

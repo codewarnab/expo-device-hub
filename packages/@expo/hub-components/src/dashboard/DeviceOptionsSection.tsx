@@ -107,7 +107,7 @@ export type DeviceFrameOption = {
 /**
  * Device-wide appearance, connectivity, and accessibility settings, plus iOS
  * keyboard controls, the viewer-local device frame option, and device-level
- * actions (Android Back and Recents keys, shutting down or removing the device).
+ * actions (Shake, Android Back and Recents keys, shutting down or removing the device).
  * A foldable leads with its fold controls, as serve-sim's settings do for the iPhone Duo.
  */
 export function DeviceOptionsSection({
@@ -117,6 +117,7 @@ export function DeviceOptionsSection({
   showDeviceSettings = true,
   onShutdown,
   onRemove,
+  onShake,
 }: {
   client?: DeviceClient;
   deviceFrame?: DeviceFrameOption;
@@ -128,6 +129,8 @@ export function DeviceOptionsSection({
   onShutdown?: () => void;
   /** Remove/delete the device on the host. Omit for physical devices. */
   onRemove?: () => void;
+  /** Called after Shake sends the shake, so the dashboard can wobble the stream. */
+  onShake?: () => void;
 }) {
   const [open, setOpen] = useState(true);
   // Like serve-sim's settings, a failed fold command opens the section to show its error.
@@ -339,6 +342,19 @@ export function DeviceOptionsSection({
             </SidebarActionButton>
           </SidebarRow>
         </>
+      )}
+
+      {client?.capabilities.shake && (
+        <SidebarRow label="Shake device">
+          <SidebarActionButton
+            onClick={() => {
+              client.shake();
+              onShake?.();
+            }}
+          >
+            Shake
+          </SidebarActionButton>
+        </SidebarRow>
       )}
 
       {client && onShutdown && (
